@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -euo pipefail
+
+function run_commands {
+	COMMANDS=$1
+	while IFS= read -r cmd; do echo "$cmd" && eval "$cmd" ; done < <(printf '%s\n' "$COMMANDS")
+}
+
+
+echo "Restic repository: '${RESTIC_REPOSITORY}'"
+if restic cat config > /dev/null; then
+    echo "Restic repository found"
+else
+    if restic init; then
+      echo "Repository successfully initialized."
+    fi
+fi
+
+set +e
+restic $@
+rc=$?
+set -e
+
+if [ $rc -ne 0 ]; then
+    $POST_COMMAND_FAILURE
+else
+    $POST_COMMAND_SUCCESS
+fi
