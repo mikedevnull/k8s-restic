@@ -21,8 +21,8 @@ rc=$?
 set -e
 
 if [ $rc -ne 0 ]; then
-    $POST_COMMAND_FAILURE
+    eval ${POST_COMMAND_FAILURE:-}
     exit $rc
 else
-    $POST_COMMAND_SUCCESS
+    eval ${POST_COMMAND_SUCCESS:-}
 fi
